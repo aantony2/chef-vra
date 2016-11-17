@@ -13,6 +13,6 @@ new-item -path /Users/rkailas/Mckesson/first-boot.json -type file
 
 Add-Content /Users/rkailas/Mckesson/first-boot.json -Value "{`"run_list`": [`"recipe[$($args[1])]`"]}"
 
-$FIRSTBOOTJSON = /Users/rkailas/Mckesson/first-boot.json
+$FIRSTBOOTJSON = "/Users/rkailas/Mckesson/first-boot.json"
 
 chef-client -j $FIRSTBOOTJSON
