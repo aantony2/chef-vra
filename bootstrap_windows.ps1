@@ -1,6 +1,6 @@
 if (!(Test-Path "/Users/rkailas/Mckesson/client.rb"))
 {
-  new-item -path /Users/rkailas/Mckesson/client.rb -type file
+  New-Item -path /Users/rkailas/Mckesson/client.rb -type file
 }
 
 else
@@ -15,7 +15,7 @@ Add-Content /Users/rkailas/Mckesson/client.rb -Value 'ssl_verify_mode :verify_no
 
 if (!(Test-Path "/Users/rkailas/Mckesson/first-boot.json"))
 {
-new-item -path /Users/rkailas/Mckesson/first-boot.json -type file
+New-Item -path /Users/rkailas/Mckesson/first-boot.json -type file
 }
 else
 {
