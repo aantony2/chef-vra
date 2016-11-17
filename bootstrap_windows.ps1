@@ -9,6 +9,10 @@ Add-Content /Users/rkailas/Mckesson/client.rb -Value "validation_key  '/etc/chef
 Add-Content /Users/rkailas/Mckesson/client.rb -Value "validation_client_name 'onecloud-validator'"
 Add-Content /Users/rkailas/Mckesson/client.rb -Value 'ssl_verify_mode :verify_none'
 
-new-item -path /Users/rkailas/Mckesson/firstboot.json -type file
+new-item -path /Users/rkailas/Mckesson/first-boot.json -type file
 
-Add-Content /Users/rkailas/Mckesson/firstboot.json -Value "{`"run_list`": [`"recipe[$($args[1])]`"]}"
+Add-Content /Users/rkailas/Mckesson/first-boot.json -Value "{`"run_list`": [`"recipe[$($args[1])]`"]}"
+
+$FIRSTBOOTJSON = /Users/rkailas/Mckesson/first-boot.json
+
+chef-client -j $FIRSTBOOTJSON
