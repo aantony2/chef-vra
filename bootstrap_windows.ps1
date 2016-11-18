@@ -2,7 +2,7 @@ param (
     [string]$ChefServerUrl, 
     [string[]]$Recipe, 
     [string]$Environment, 
-    [string]$BasePath = '/Users/rkailas/Mckesson' )
+    [string]$BasePath = 'c:/chef' )
 
 if (Test-Path "$BasePath/client.rb")
 {
@@ -14,7 +14,7 @@ Add-Content "$BasePath/client.rb" -Encoding Ascii -Value @"
 log_level       :info
 log_location    STDOUT
 chef_server_url    $ChefServerUrl
-validation_key  '/etc/chef/validation.pem'
+validation_key  'c:/chef/validation.pem'
 
 validation_client_name 'onecloud-validator'
 ssl_verify_mode :verify_none
@@ -26,9 +26,9 @@ if (Test-Path "$BasePath/first-boot.json")
 }
 new-item -path "$BasePath/first-boot.json" -type file
 $runlist = $recipe | foreach {$text = ""} {
-        "recipe[$_],"
-    } {$text.trim(',')}
-Add-Content "$BasePath/first-boot.json" -Encoding Ascii -Value "{`"run_list`": `"[$runlist]`"]}"
+        $text += "recipe[$_],"
+    } {$text.trim().trim(',')}
+Add-Content "$BasePath/first-boot.json" -Encoding Ascii -Value "{`"run_list`": `"[$runlist]`"}"
 
 $FIRSTBOOTJSON = "$BasePath/first-boot.json"
 
