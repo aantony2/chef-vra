@@ -1,27 +1,35 @@
-if (!(Test-Path "/Users/rkailas/Mckesson/client.rb"))
-{
-  New-Item -path /Users/rkailas/Mckesson/client.rb -type file
-}
+param ( 
+    [string]$ChefServerUrl, 
+    [string[]]$Recipe, 
+    [string]$Environment, 
+    [string]$BasePath = '/Users/rkailas/Mckesson' )
 
-else
+if (Test-Path "$BasePath/client.rb")
 {
-Add-Content /Users/rkailas/Mckesson/client.rb -Value "log_level       :info"
-Add-Content /Users/rkailas/Mckesson/client.rb -Value "log_location    STDOUT"
-Add-Content /Users/rkailas/Mckesson/client.rb -Value "chef_server_url    $($args[0])"
-Add-Content /Users/rkailas/Mckesson/client.rb -Value "validation_key  '/etc/chef/validation.pem'"
-Add-Content /Users/rkailas/Mckesson/client.rb -Value "validation_client_name 'onecloud-validator'"
-Add-Content /Users/rkailas/Mckesson/client.rb -Value 'ssl_verify_mode :verify_none'
+    Remove-Item "$BasePath/client.rb"
 }
+new-item -path "$BasePath/client.rb" -type file
 
-if (!(Test-Path "/Users/rkailas/Mckesson/first-boot.json"))
+Add-Content "$BasePath/client.rb" -Encoding Ascii -Value @"
+log_level       :info
+log_location    STDOUT
+chef_server_url    $ChefServerUrl
+validation_key  '/etc/chef/validation.pem'
+
+validation_client_name 'onecloud-validator'
+ssl_verify_mode :verify_none
+"@
+
+if (Test-Path "$BasePath/first-boot.json")
 {
-New-Item -path /Users/rkailas/Mckesson/first-boot.json -type file
+    Remove-Item "$BasePath/first-boot.json"
 }
-else
-{
-Add-Content /Users/rkailas/Mckesson/first-boot.json -Value "{`"run_list`": [`"recipe[$($args[1])]`"]}"
-}
+new-item -path "$BasePath/first-boot.json" -type file
+$runlist = $recipe | foreach {$text = ""} {
+        "recipe[$_],"
+    } {$text.trim(',')}
+Add-Content "$BasePath/first-boot.json" -Encoding Ascii -Value "{`"run_list`": `"[$runlist]`"]}"
 
-$FIRSTBOOTJSON = "/Users/rkailas/Mckesson/first-boot.json"
+$FIRSTBOOTJSON = "$BasePath/first-boot.json"
 
-chef-client -j $FIRSTBOOTJSON
+chef-client -j $FIRSTBOOTJSON --environment $environment
